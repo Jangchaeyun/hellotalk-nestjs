@@ -1,35 +1,22 @@
 import {
-   Body, Controller, Get, Inject, Post
-}
-from '@nestjs/common';
-import {
-   UseGuards
-}
-from '@nestjs/common/decorators';
-import {
-   instanceToPlain
-}
-from 'class-transformer';
-import {
-   IUserService
-}
-from 'src/users/user';
-import {
-   Routes, Services
-}
-from 'src/utils/constants';
-import {
-   IAuthService
-}
-from './auth';
-import {
-   CreateUserDto
-}
-from './dtos/CreateUser.dto';
-import {
-   LocalAuthGuard
-}
-from './utils/Guards';
+   Body,
+   Controller,
+   Get,
+   Inject,
+   Post,
+   UseGuards,
+   Req,
+   Res,
+   HttpStatus
+} from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
+import { Request, Response } from 'express';
+import { IUserService } from 'src/users/user';
+import { Routes, Services } from 'src/utils/constants';
+import { IAuthService } from './auth';
+import { CreateUserDto } from './dtos/CreateUser.dto';
+import { LocalAuthGuard, AuthenticatedGuard } from './utils/Guards';
+
 @Controller(Routes.AUTH)
 export class AuthController {
    constructor(
@@ -43,9 +30,16 @@ export class AuthController {
 
    @UseGuards(LocalAuthGuard)
    @Post('login')
-   login() { }
+   login(@Res() res: Response) {
+      return res.send(HttpStatus.OK);
+   }
 
-   @Get('status') status() {}
+   @Get('status') 
+   @UseGuards(AuthenticatedGuard)
+   status(@Req() req: Request, @Res() res: Response) {
+      console.log(req.user);
+      res.send(req.user);
+    }
 
    @Post('logout') logout() {}
 }
