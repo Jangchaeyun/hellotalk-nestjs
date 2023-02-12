@@ -13,5 +13,10 @@ export type ValidateUserDetails = {
 export type findUserParams = Partial<{
      id: number;
      email: string;
-     username: string;
 }>;
+
+export type CreateConversationParams = {
+     authorId: number;
+     recipientId: number;
+     message: string;
+}
